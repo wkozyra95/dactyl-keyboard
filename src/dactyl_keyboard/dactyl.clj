@@ -583,24 +583,32 @@
   ))
 
 
-(def rj9-start  (map + [0 -3  0] (key-position 0 0 (map + (wall-locate3 0 1) [0 (/ mount-height  2) 0]))))
-(def rj9-position  [(first rj9-start) (second rj9-start) 11])
-(def rj9-cube   (cube 14.78 13 22.38))
-(def rj9-space  (translate rj9-position rj9-cube))
-(def rj9-holder (translate rj9-position
-                  (difference rj9-cube
-                              (union (translate [0 2 0] (cube 10.78  9 18.38))
-                                     (translate [0 0 5] (cube 10.78 13  5))))))
+(def rj9-mount-cyl-size (cylinder [1.625 2] 3.51) )
+(def rj9-box-thickness [4 -0.1 6])
+(def rj9-size-exact [11.18 20.60 19.5]); 16 hight + 3.5 pins
+(def rj9-size [11.2 14 17])
+(def rj9-size-outer (map + rj9-size rj9-box-thickness ))
+(def rj9-start  (map + [0 5 0] (key-position 0 0 (map + (wall-locate2 0 1) [0 (/ mount-height  2) 0]))))
+(def rj9-position  [(first rj9-start) (- (second rj9-start) (/ (second rj9-size) 2)) (/ (nth rj9-size-outer 2) 2)])
+(def rj9-space  (translate rj9-position (union
+                                            (translate [3.31 (- (/ (second rj9-size) 2) 8) 7.15] rj9-mount-cyl-size)
+                                            (translate [-3.31 (- (/ (second rj9-size) 2) 8) 7.15] rj9-mount-cyl-size)
+                                            (translate [0 0 -3.01] (apply cube rj9-size))
+                                         )))
+(def rj9-holder (translate rj9-position (apply cube rj9-size-outer)))
 
-(def usb-holder-position (key-position 1 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0])))
-(def usb-holder-size [6.5 10.0 13.6])
-(def usb-holder-thickness 4)
-(def usb-holder
-    (->> (cube (+ (first usb-holder-size) usb-holder-thickness) (second usb-holder-size) (+ (last usb-holder-size) usb-holder-thickness))
-         (translate [(first usb-holder-position) (second usb-holder-position) (/ (+ (last usb-holder-size) usb-holder-thickness) 2)])))
-(def usb-holder-hole
-    (->> (apply cube usb-holder-size)
-         (translate [(first usb-holder-position) (second usb-holder-position) (/ (+ (last usb-holder-size) usb-holder-thickness) 2)])))
+(def usb-holder-thickness [4 -0.1 4])
+(def usb-holder-size [6.5 14.0 13.6])
+(def usb-holder-size-outer (map + usb-holder-size usb-holder-thickness ))
+(def usb-holder-start (map + [-12 5 0] (key-position 0 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0]))))
+(def usb-holder-position [
+                          (first usb-holder-start) 
+                          (- (second usb-holder-start) (/ (second usb-holder-size) 2))
+                          ;(/ (nth usb-holder-size-outer 2) 2)
+                          13
+                          ])
+(def usb-holder (translate (map + [0 0 1.2] usb-holder-position ) (apply cube usb-holder-size-outer)))
+(def usb-holder-hole (translate usb-holder-position (apply cube (map + [0 2 0] usb-holder-size))))
 
 (def teensy-width 20)  
 (def teensy-height 12)
@@ -669,29 +677,6 @@
 (def screw-insert-outers (screw-insert-all-shapes (+ screw-insert-bottom-radius 1.6) (+ screw-insert-top-radius 1.6) (+ screw-insert-height 1.5)))
 (def screw-insert-screw-holes  (screw-insert-all-shapes 1.7 1.7 350))
 
-(def wire-post-height 7)
-(def wire-post-overhang 3.5)
-(def wire-post-diameter 2.6)
-(defn wire-post [direction offset]
-   (->> (union (translate [0 (* wire-post-diameter -0.5 direction) 0] (cube wire-post-diameter wire-post-diameter wire-post-height))
-               (translate [0 (* wire-post-overhang -0.5 direction) (/ wire-post-height -2)] (cube wire-post-diameter wire-post-overhang wire-post-diameter)))
-        (translate [0 (- offset) (+ (/ wire-post-height -2) 3) ])
-        (rotate (/ α -2) [1 0 0])
-        (translate [3 (/ mount-height -2) 0])))
-
-(def wire-posts
-  (union
-     (thumb-ml-place (translate [-5 0 -2] (wire-post  1 0)))
-     (thumb-ml-place (translate [ 0 0 -2.5] (wire-post -1 6)))
-     (thumb-ml-place (translate [ 5 0 -2] (wire-post  1 0)))
-     (for [column (range 0 lastcol)
-           row (range 0 cornerrow)]
-       (union
-        (key-place column row (translate [-5 0 0] (wire-post 1 0)))
-        (key-place column row (translate [0 0 0] (wire-post -1 6)))
-        (key-place column row (translate [5 0 0] (wire-post  1 0)))))))
-
-
 (def model-right (difference 
                    (union
                     key-holes
@@ -701,12 +686,11 @@
                     (difference (union case-walls 
                                        screw-insert-outers 
                                        teensy-holder
+                                       rj9-holder
                                        usb-holder)
                                 rj9-space 
                                 usb-holder-hole
                                 screw-insert-holes)
-                    rj9-holder
-                    wire-posts
                     ; thumbcaps
                     ; caps
                     )
@@ -732,14 +716,6 @@
                     teensy-holder
                     rj9-holder
                     usb-holder-hole
-                    ; usb-holder-hole
-                    ; ; teensy-holder-hole
-                    ;             screw-insert-outers 
-                    ;             teensy-screw-insert-holes
-                    ;             teensy-screw-insert-outers
-                    ;             usb-cutout 
-                    ;             rj9-space 
-                                ; wire-posts
                   )))
 
 (spit "things/right-plate.scad"
