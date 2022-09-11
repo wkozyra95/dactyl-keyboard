@@ -9,3 +9,6 @@
 *.scad
 !things/*-iteration/*.scad
 /target
+
+.clj-kondo
+.lsp
