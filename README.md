@@ -2,7 +2,9 @@
 
 This fork is just for my personal customizations, it removes a lot of features of the [original project](https://github.com/tshort/dactyl-keyboard).
 
-## Second iteration (in progress)
+## Second iteration
+
+![image](/things/02-iteration/result.png)
 
 **.scad** and **.stl** files can be found in [./things/02-iteration](/things/02-iteration).
 
