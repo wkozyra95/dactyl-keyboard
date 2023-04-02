@@ -18,27 +18,33 @@
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π 36))                        ; curvature of the rows
 (def centerrow (- nrows 3))             ; controls front-back tilt
-(def centercol 3)                       ; controls left-right tilt / tenting (higher number is more tenting)
+(def centercol 4)                       ; controls left-right tilt / tenting (higher number is more tenting)
 (def tenting-angle (/ π 12))            ; or, change this for more precise tenting control
 (def column-style
   (if (> nrows 5) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
 ; (def column-style :fixed)
 
+;(defn column-offset [column] (cond
+;                               (= column 2) [0 2.82 -4.5]
+;                               (>= column 4) [0 -12 5.64]            ; original [0 -5.8 5.64]
+;                               :else [0 0 0]))
 (defn column-offset [column] (cond
+                               (= column 1) [0 0 -1]
                                (= column 2) [0 2.82 -4.5]
-                               (>= column 4) [0 -12 5.64]            ; original [0 -5.8 5.64]
+                               (= column 3) [2 -2 0]
+                               (>= column 4) [4 -16 4.5]            ; original [0 -5.8 5.64]
                                :else [0 0 0]))
 
 (def thumb-offsets [6 -3 7])
 
 (def keyboard-z-offset 9)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
 
-(def extra-width 2.5)                   ; extra space between the base of keys; original= 2
-(def extra-height 1.0)                  ; original= 0.5
+(def extra-width 0.7)                   ; extra space between the base of keys; original= 2
+(def extra-height 0.5)                  ; original= 0.5
 
 (def wall-z-offset -15)                 ; length of the first downward-sloping part of the wall (negative)
 (def wall-xy-offset 5)                  ; offset in the x and/or y direction for the first downward-sloping part of the wall (negative)
-(def wall-thickness 2)                  ; wall thickness parameter; originally 5
+(def wall-thickness 2.5)                  ; wall thickness parameter; originally 5
 
 ;; Settings for column-style == :fixed 
 ;; The defaults roughly match Maltron settings
@@ -58,10 +64,15 @@
 (def cornerrow (dec lastrow))
 (def lastcol (dec ncols))
 
-(def keycapcolor [47/255 47/255 49/255 1])
+;(def keycapcolor [47/255 47/255 49/255 1])
+;(def platecolor [25/255 25/255 25/255 1])
+;(def casecolor
+;  [100/255 255/255 14/255 1])
+
+(def keycapcolor [10/255 188/255 198/255 1])
 (def platecolor [25/255 25/255 25/255 1])
 (def casecolor
-  [100/255 255/255 14/255 1])
+  [47/255 47/255 49/255 1])
 
 ;;;;;;;;;;;;;;;;;
 ;; Switch Hole ;;
@@ -270,7 +281,7 @@
 (defn thumbkey-rotation [shape]
   (->> shape
        (rotate (deg2rad  10) [1 0 0])
-       (rotate (deg2rad -23) [0 1 0])
+       (rotate (deg2rad -10) [0 1 0])
        (rotate (deg2rad  10) [0 0 1])))
 
 (defn thumbkey-base [shape]
@@ -281,32 +292,32 @@
 (defn thumb-t1-place [shape]
   (->> shape
        (thumbkey-base)
-       (translate [-14 -10 2])))
+       (translate [-14 -10 7])))
 
 (defn thumb-t2-place [shape]
   (->> shape
        (thumbkey-base)
-       (translate [-34 -13 -4])))
+       (translate [-34 -13 2])))
 
 (defn thumb-t3-place [shape]
   (->> shape
        (thumbkey-base)
-       (translate [-54 -16 -10])))
+       (translate [-54 -16 -3])))
 
 (defn thumb-b1-place [shape]
   (->> shape
        (thumbkey-base)
-       (translate [-12 -30 -5])))
+       (translate [-9 -29 1])))
 
 (defn thumb-b2-place [shape]
   (->> shape
        (thumbkey-base)
-       (translate [-32 -33 -11])))
+       (translate [-29 -32 -4])))
 
 (defn thumb-b3-place [shape]
   (->> shape
        (thumbkey-base)
-       (translate [-52 -36 -17])))
+       (translate [-49 -35 -9])))
 
 (defn thumb-top-row-layout [shape]
   (union
@@ -329,88 +340,6 @@
   (union
    (thumb-top-row-layout single-plate)
    (thumb-bottom-row-layout single-plate)))
-
-(def thumb-connectors
-  (union
-   (triangle-hulls
-    (thumb-t2-place web-post-tr)
-    (thumb-t1-place web-post-tl)
-    (thumb-t2-place web-post-br)
-    (thumb-t1-place web-post-bl)
-    (thumb-b1-place web-post-tl)
-    (thumb-t1-place web-post-br)
-    (thumb-b1-place web-post-tr))
-   (triangle-hulls
-    (thumb-t3-place web-post-br)
-    (thumb-t2-place web-post-bl)
-    (thumb-b2-place web-post-tl)
-    (thumb-t2-place web-post-br)
-    (thumb-b2-place web-post-tr)
-    (thumb-b1-place web-post-tl)
-    (thumb-b2-place web-post-br)
-    (thumb-b1-place web-post-bl))
-   (triangle-hulls
-    (thumb-t3-place web-post-bl)
-    (thumb-b3-place web-post-tl)
-    (thumb-t3-place web-post-br)
-    (thumb-b3-place web-post-tr)
-    (thumb-b2-place web-post-tl)
-    (thumb-b3-place web-post-br)
-    (thumb-b2-place web-post-bl))
-   (triangle-hulls
-    (thumb-t1-place web-post-br)
-    (thumb-t1-place web-post-tr)
-    (key-place 2 lastrow web-post-bl)
-    (key-place 1 cornerrow web-post-br)
-    (key-place 2 lastrow web-post-tl))
-   (triangle-hulls
-    (thumb-t1-place web-post-tl)
-    (key-place 0 cornerrow web-post-br)
-    (thumb-t2-place web-post-tr)
-    (key-place 0 cornerrow web-post-bl)
-    (thumb-t2-place web-post-tl)
-    (thumb-t3-place web-post-tr)
-    (thumb-t2-place web-post-bl)
-    (thumb-t3-place web-post-br))
-   (triangle-hulls
-    (key-place 1 cornerrow web-post-br)
-    (thumb-t1-place web-post-tr)
-    (key-place 0 cornerrow web-post-br)
-    (thumb-t1-place web-post-tl))
-   (triangle-hulls
-    (key-place 2 lastrow web-post-br)
-    (thumb-t1-place web-post-br)
-    (key-place 2 lastrow web-post-bl))
-   (triangle-hulls
-    (key-place 2 lastrow web-post-br)
-    (key-place 3 lastrow web-post-bl)
-    (thumb-t1-place web-post-br)
-    (thumb-b1-place web-post-tr))
-   (triangle-hulls
-    (key-place 3 lastrow web-post-bl)
-    (thumb-b1-place web-post-br)
-    (thumb-b1-place web-post-tr))
-   (triangle-hulls
-    (key-place 4 cornerrow web-post-bl)
-    (key-place 3 cornerrow web-post-br)
-    (key-place 3 lastrow web-post-tr)
-    (key-place 3 cornerrow web-post-bl)
-    (key-place 3 lastrow web-post-tl)
-    (key-place 2 lastrow web-post-tr)
-    (key-place 3 lastrow web-post-bl)
-    (key-place 2 lastrow web-post-br))
-   (triangle-hulls
-    (key-place 1 cornerrow web-post-br)
-    (key-place 2 lastrow web-post-tl)
-    (key-place 2 cornerrow web-post-bl)
-    (key-place 2 lastrow web-post-tr)
-    (key-place 2 cornerrow web-post-br)
-    (key-place 3 cornerrow web-post-bl))
-   (triangle-hulls
-    (key-place 3 lastrow web-post-tr)
-    (key-place 3 lastrow web-post-br)
-    (key-place 3 lastrow web-post-tr)
-    (key-place 4 cornerrow web-post-bl))))
 
 ;;;;;;;;;;
 ;; Case ;;
@@ -490,12 +419,8 @@
    ; thumb walls
    (hull
     (left-key-place cornerrow -1 web-post)
-    (left-key-place cornerrow -1 (translate (wall-locate1 -1 0) web-post))
-    (key-place 0 cornerrow web-post-bl)
-    (key-place 0 cornerrow (translate (wall-locate1 -1 0) web-post-bl))
-    (thumb-t3-place (translate (wall-locate1 -1 0) web-post-tl))
-    (thumb-t3-place web-post-tl)
-    (thumb-t3-place web-post-tr))
+    (thumb-t3-place web-post-tr)
+    (thumb-t3-place web-post-tl))
    (hull
     (left-key-place cornerrow -1 web-post)
     (left-key-place cornerrow -1 (translate (wall-locate1 -1 0) web-post))
@@ -527,30 +452,114 @@
    (wall-brace thumb-b1-place  0 -1 web-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
 
    ; thumb fill to match plate
-   (hull
-    (thumb-b3-place (translate (wall-locate1 -1 0) web-post-tl))
-    (thumb-b3-place (translate (wall-locate1 -1 0) web-post-bl))
-    (thumb-b3-place (translate (wall-locate1 0 -1) web-post-bl))
-    (thumb-b3-place (translate (wall-locate3 0 -1) web-post-bl))
-    (translate [-92.6341, -79.1564 0] (cube post-size post-size post-size))
-    (translate [-92.6906, -79.1101 0] (cube post-size post-size post-size))
-    (translate [-93.05110000000001, -75.61320000000001 0] (cube post-size post-size post-size))
-    (translate [-93.2728, -73.46250000000001 0] (cube post-size post-size post-size))
-    (translate [-93.2131, -73.35420000000001 0] (cube post-size post-size post-size))
-    (translate [-89.9849, -67.4988 0] (cube post-size post-size post-size))
+   ;(hull
+   ; (thumb-b3-place (translate (wall-locate1 -1 0) web-post-tl))
+   ; (thumb-b3-place (translate (wall-locate1 -1 0) web-post-bl))
+   ; (thumb-b3-place (translate (wall-locate1 0 -1) web-post-bl))
+   ; (thumb-b3-place (translate (wall-locate3 0 -1) web-post-bl))
+   ; (translate [-92.6341, -79.1564 0] (cube post-size post-size post-size))
+   ; (translate [-92.6906, -79.1101 0] (cube post-size post-size post-size))
+   ; (translate [-93.05110000000001, -75.61320000000001 0] (cube post-size post-size post-size))
+   ; (translate [-93.2728, -73.46250000000001 0] (cube post-size post-size post-size))
+   ; (translate [-93.2131, -73.35420000000001 0] (cube post-size post-size post-size))
+   ; (translate [-89.9849, -67.4988 0] (cube post-size post-size post-size))
 
-    (translate [-88, -60.5 0] (cube post-size post-size post-size)))
+   ; (translate [-88, -60.5 0] (cube post-size post-size post-size)))
     ; thumb connect insert (inner)
-   (bottom-hull
-    (translate [0 0 -20] (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post)))
-    (thumb-t3-place (translate (wall-locate3 -1 0) web-post-tl))
-    (translate [0 0 3] (thumb-t3-place (translate (wall-locate3 -1 0) web-post-bl)))
-    (translate [12 0 3] (thumb-t3-place (translate (wall-locate3 -1 0) web-post-tl))))
-    ; thumb connect insert (inner)
-   (bottom-hull
-    (thumb-b1-place (translate (wall-locate3 0 -1) web-post-br))
-    (translate [0 6 0] (thumb-b1-place (translate (wall-locate3 0 -1) web-post-br)))
-    (key-place 3 lastrow (translate (wall-locate3 0 -1) web-post-bl)))))
+  ; (bottom-hull
+  ;  (translate [0 0 -20] (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post)))
+  ;  (thumb-t3-place (translate (wall-locate3 -1 0) web-post-tl))
+  ;  (translate [0 0 3] (thumb-t3-place (translate (wall-locate3 -1 0) web-post-bl)))
+  ;  (translate [12 0 3] (thumb-t3-place (translate (wall-locate3 -1 0) web-post-tl))))
+  ;  ; thumb connect insert (inner)
+  ; (bottom-hull
+  ;  (thumb-b1-place (translate (wall-locate3 0 -1) web-post-br))
+  ;  (translate [0 6 0] (thumb-b1-place (translate (wall-locate3 0 -1) web-post-br)))
+  ;  (key-place 3 lastrow (translate (wall-locate3 0 -1) web-post-bl)))
+   ))
+(def thumb-connectors
+  (union
+   (triangle-hulls
+    (thumb-t2-place web-post-tr)
+    (thumb-t1-place web-post-tl)
+    (thumb-t2-place web-post-br)
+    (thumb-t1-place web-post-bl)
+    (thumb-b1-place web-post-tl)
+    (thumb-t1-place web-post-br)
+    (thumb-b1-place web-post-tr))
+   (triangle-hulls
+    (thumb-t3-place web-post-br)
+    (thumb-t2-place web-post-bl)
+    (thumb-b2-place web-post-tl)
+    (thumb-t2-place web-post-br)
+    (thumb-b2-place web-post-tr)
+    (thumb-b1-place web-post-tl)
+    (thumb-b2-place web-post-br)
+    (thumb-b1-place web-post-bl))
+   (triangle-hulls
+    (thumb-t3-place web-post-bl)
+    (thumb-b3-place web-post-tl)
+    (thumb-t3-place web-post-br)
+    (thumb-b3-place web-post-tr)
+    (thumb-b2-place web-post-tl)
+    (thumb-b3-place web-post-br)
+    (thumb-b2-place web-post-bl))
+   (triangle-hulls
+    (thumb-t1-place web-post-br)
+    (thumb-t1-place web-post-tr)
+    (key-place 2 lastrow web-post-bl)
+    (key-place 1 cornerrow web-post-br)
+    (key-place 2 lastrow web-post-tl))
+   (triangle-hulls
+    (thumb-t1-place web-post-tl)
+    (key-place 0 cornerrow web-post-br)
+    (thumb-t2-place web-post-tr)
+    (key-place 0 cornerrow web-post-bl)
+    (thumb-t2-place web-post-tl)
+    (left-key-place cornerrow -1 web-post)
+    (thumb-t3-place web-post-tr)
+    (thumb-t2-place web-post-tl)
+    (thumb-t3-place web-post-br)
+    (thumb-t2-place web-post-bl))
+   (triangle-hulls
+    (key-place 1 cornerrow web-post-br)
+    (thumb-t1-place web-post-tr)
+    (key-place 0 cornerrow web-post-br)
+    (thumb-t1-place web-post-tl))
+   (triangle-hulls
+    (key-place 2 lastrow web-post-br)
+    (thumb-t1-place web-post-br)
+    (key-place 2 lastrow web-post-bl))
+   (triangle-hulls
+    (key-place 2 lastrow web-post-br)
+    (key-place 3 lastrow web-post-bl)
+    (thumb-t1-place web-post-br)
+    (thumb-b1-place web-post-tr))
+   (triangle-hulls
+    (key-place 3 lastrow web-post-bl)
+    (thumb-b1-place web-post-br)
+    (thumb-b1-place web-post-tr))
+   (triangle-hulls
+    (key-place 4 cornerrow web-post-bl)
+    (key-place 3 cornerrow web-post-br)
+    (key-place 3 lastrow web-post-tr)
+    (key-place 3 cornerrow web-post-bl)
+    (key-place 3 lastrow web-post-tl)
+    (key-place 2 lastrow web-post-tr)
+    (key-place 3 lastrow web-post-bl)
+    (key-place 2 lastrow web-post-br))
+   (triangle-hulls
+    (key-place 1 cornerrow web-post-br)
+    (key-place 2 lastrow web-post-tl)
+    (key-place 2 cornerrow web-post-bl)
+    (key-place 2 lastrow web-post-tr)
+    (key-place 2 cornerrow web-post-br)
+    (key-place 3 cornerrow web-post-bl))
+   (triangle-hulls
+    (key-place 3 lastrow web-post-tr)
+    (key-place 3 lastrow web-post-br)
+    (key-place 3 lastrow web-post-tr)
+    (key-place 4 cornerrow web-post-bl))))
 
 (def rj9-mount-cyl-size (cylinder [1.625 2] 3.51))
 (def rj9-box-thickness [4 -0.1 6])
@@ -568,15 +577,39 @@
 (def rj9-holder (translate rj9-position (apply cube rj9-size-outer)))
 
 (def usb-holder-thickness [4 -0.1 4])
-(def usb-holder-size [6.5 14.0 13.6])
+(def usb-holder-size [5.3 10.0 10.2])
 (def usb-holder-size-outer (map + usb-holder-size usb-holder-thickness))
-(def usb-holder-start (map + [-12 5 0] (key-position 0 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0]))))
+(def usb-holder-start (map + [-10 5 0] (key-position 0 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0]))))
 (def usb-holder-position [(first usb-holder-start)
                           (- (second usb-holder-start) (/ (second usb-holder-size) 2))
                           ;(/ (nth usb-holder-size-outer 2) 2)
                           13])
-(def usb-holder (translate (map + [0 0 1.2] usb-holder-position) (apply cube usb-holder-size-outer)))
-(def usb-holder-hole (translate usb-holder-position (apply cube (map + [0 2 0] usb-holder-size))))
+(def usb-holder (translate (map + [0 0 0] usb-holder-position) (apply cube usb-holder-size-outer)))
+(def usb-holder-hole (translate usb-holder-position (apply cube (map + [0 5 0] usb-holder-size))))
+
+(def power-switch-thickness [4 -0.1 4])
+(def power-switch-size [7.4 8.0 16.2])
+(def power-switch-size-outer (map + power-switch-size power-switch-thickness))
+(def power-switch-start (map + [-1.5 5 0] (key-position 0 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0]))))
+(def power-switch-position [(first power-switch-start)
+                            (- (second power-switch-start) (/ (second power-switch-size) 2))
+                          ;(/ (nth power-switch-size-outer 2) 2)
+                            10.0])
+(def power-switch (translate (map + [0 0 0] power-switch-position) (apply cube power-switch-size-outer)))
+(def power-switch-hole (translate power-switch-position (apply cube (map + [0 5 0] power-switch-size))))
+
+(def reset-switch-thickness [4 -0.1 4])
+(def reset-switch-size [6 8.0 6])
+(def reset-switch-size-outer (map + reset-switch-size reset-switch-thickness))
+(def reset-switch-start (map + [+7 5 0] (key-position 0 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0]))))
+(def reset-switch-position [(first reset-switch-start)
+                            (- (second reset-switch-start) (/ (second reset-switch-size) 2))
+                          ;(/ (nth reset-switch-size-outer 2) 2)
+                            5])
+(def reset-switch (translate (map + [0 0 0] reset-switch-position) (apply cube reset-switch-size-outer)))
+(def reset-switch-hole (translate (map + [0 4 0] reset-switch-position) (apply cube (map + [0 0 0] reset-switch-size))))
+;innder hold
+(def reset-switch-hole-2 (translate reset-switch-position (apply cube (map + [-2 0 -0.2] reset-switch-size))))
 
 (def teensy-width 20)
 (def teensy-pcb-thickness 6)
@@ -593,9 +626,8 @@
    (union
     (->> (cube 3 teensy-holder-length (+ 6 teensy-width))
          (translate [1.5 teensy-holder-offset 0]))
-    (->> (cube teensy-pcb-thickness teensy-holder-length 3)
-         (translate [(+ (/ teensy-pcb-thickness 2) 3) teensy-holder-offset (- -1.5 (/ teensy-width 2))]))
-
+    (->> (cube (+ 8 teensy-pcb-thickness) teensy-holder-length 3)
+         (translate [(+ (/ teensy-pcb-thickness 2) 7) teensy-holder-offset (- -1.5 (/ teensy-width 2))]))
     (->> (cube teensy-pcb-thickness teensy-holder-top-length 3)
          (translate [(+ (/ teensy-pcb-thickness 2) 3) teensy-holder-top-offset (+ 1.5 (/ teensy-width 2))])))
    (translate [(- teensy-holder-width) 0 0])
@@ -621,11 +653,13 @@
          (translate [(first position) (second position) (/ height 2)]))))
 
 (defn screw-insert-all-shapes [bottom-radius top-radius height]
-  (union (screw-insert 0 0         bottom-radius top-radius height)
-         (screw-insert 0 lastrow   bottom-radius top-radius height)
-         (screw-insert 2 (+ lastrow 0.3)  bottom-radius top-radius height)
-         (screw-insert 3 0         bottom-radius top-radius height)
-         (screw-insert lastcol 1   bottom-radius top-radius height)))
+  (union
+   (screw-insert 0 0         bottom-radius top-radius height) ; inner top
+   (screw-insert 0 (- lastrow 0.5)   bottom-radius top-radius height) ; inner bottom (thumb)
+   (screw-insert 2 (+ lastrow 0.5)  bottom-radius top-radius height) ; mid bottom (thumb)
+   (screw-insert 3 0         bottom-radius top-radius height) ; mid top
+   (screw-insert lastcol 1   bottom-radius top-radius height); outer
+   ))
 (def screw-insert-height 3.8)
 (def screw-insert-bottom-radius (/ 5.31 2))
 (def screw-insert-top-radius (/ 5.1 2))
@@ -710,10 +744,116 @@
    [-83.5 -9]
    [-83.5 9]])
 
+;(def dongle-controller-height 3.2)
+(def dongle-controller-height (+ 1.6 2.54 0.1)) ; 2.56 is a thickness of breakout pin mount and 1.6 is an estimation of thickness of a PCB itself
+(def dongle-controller-size [33 17.8 dongle-controller-height])
+(def dongle-thickness 4)
+(def dongle-half-hight  (+ dongle-thickness (/ dongle-controller-height 2)))
+(def dongle-layer-size [(+ (* dongle-thickness 2)  (first dongle-controller-size))
+                        (+ (* dongle-thickness 2)  (second dongle-controller-size))
+                        dongle-thickness])
+(def dongle-screw-mount-element (difference
+                                 (union (cylinder 8  dongle-half-hight))
+                                 (translate [3 0 0] (cylinder 1 100))
+                                 (translate [-50 0 0] (cube 100 100 100)) ; half cylinder
+                                 ))
+(def dongle-screw-mount (translate [(/ (nth dongle-layer-size 0) 2) 0 0] dongle-screw-mount-element))
+(def dongle-screw-insert-element (difference
+                                  (union (cylinder 8  dongle-half-hight))
+                                  (translate [3 0 1] (cylinder (/ 5.31 2) dongle-half-hight))
+                                  (translate [-50 0 0] (cube 100 100 100)) ; half cylinder
+                                  ))
+(def dongle-screw-insert (translate [(/ (nth dongle-layer-size 0) 2) 0 0] dongle-screw-insert-element))
+(def dongle-row-thickness 0.8)
+(def dongle-bottom-walls (translate
+                          [0 0 (+ (/ dongle-controller-height 2) dongle-thickness)]
+                          (union
+                           (translate
+                            [0 (/ (+ dongle-thickness (second dongle-controller-size)) 2) 0]
+                            (cube (first dongle-layer-size) dongle-thickness dongle-controller-height))
+                           (translate
+                            [0 (/ (+ dongle-thickness (second dongle-controller-size)) 2) (/ (+ dongle-controller-height dongle-row-thickness) 2)]
+                            (cube (first dongle-controller-size) dongle-row-thickness dongle-row-thickness))
+                           (translate
+                            [0 (* (/ (+ dongle-thickness (second dongle-controller-size)) 2) -1) 0]
+                            (cube (first dongle-layer-size) dongle-thickness dongle-controller-height))
+                           (translate
+                            [0 (* (/ (+ dongle-thickness (second dongle-controller-size)) 2) -1) (/ (+ dongle-controller-height dongle-row-thickness) 2)]
+                            (cube (first dongle-controller-size) dongle-row-thickness dongle-row-thickness))
+                           (translate
+                            [(/ (+ dongle-thickness (first dongle-controller-size)) 2) 0 0]
+                            (cube dongle-thickness (second dongle-layer-size) dongle-controller-height)))))
+
+(def dongle-top-walls-cutout (translate
+                              [0 0 (- (/ dongle-thickness 2) dongle-row-thickness)]
+                              (union
+
+                               (translate
+                                [0 (/ (+ dongle-thickness (second dongle-controller-size)) 2) (/ dongle-row-thickness 2)]
+                                (cube (+ (first dongle-controller-size) 1) (+ dongle-row-thickness 0.05) (+ dongle-row-thickness 0.05)))
+                               (translate
+                                [0 (* (/ (+ dongle-thickness (second dongle-controller-size)) 2) -1) (/ dongle-row-thickness  2)]
+                                (cube (+ (first dongle-controller-size) 1) (+ dongle-row-thickness 0.05) (+ dongle-row-thickness  0.05))))))
+
+(def dongle-breakout-pin-full-length 11.43)
+(def dongle-breakout-pin-partembed-in-layer (/ (- dongle-breakout-pin-full-length dongle-controller-height) 2))
+(def dongle-controller-pin-distance 2.54)
+(def dongle-controller-pin-rows-distance (* 6 dongle-controller-pin-distance))
+(def dongle-controller-pin (cylinder 0.5 (+ 0.01 dongle-breakout-pin-partembed-in-layer)))
+(def dongle-pins-row
+  (union
+   (translate [(* -7 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* -6 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* -5 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* -4 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* -3 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* -2 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* -1 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* 0 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* 1 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* 2 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* 3 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* 4 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* 5 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
+   (translate [(* 6 dongle-controller-pin-distance) 0 0] dongle-controller-pin)))
+
+(def dongle-controller-pins-cutout (translate
+                                    [0 0 (+
+                                          (- dongle-thickness  dongle-breakout-pin-partembed-in-layer)
+                                          (/ dongle-breakout-pin-partembed-in-layer 2))]
+                                    (union
+                                     (translate [0 (/ dongle-controller-pin-rows-distance 2) 0] dongle-pins-row)
+                                     (translate [0 (* (/ dongle-controller-pin-rows-distance 2) -1) 0] dongle-pins-row))))
+
+(def dongle-bottom-layer (union
+                          (translate [0 0 (/ dongle-half-hight 2)] dongle-screw-insert)
+                          dongle-bottom-walls
+                          (difference
+                           (translate [0 0 (/ dongle-thickness 2)] (apply cube dongle-layer-size))
+                           dongle-controller-pins-cutout)))
+
+(def dongle-top-layer (union
+                       (translate [0 0 (/ dongle-half-hight 2)] dongle-screw-mount)
+                       (difference
+                        (translate
+                         [0 0 (/ dongle-thickness 2)]
+                         (difference
+                          (apply cube dongle-layer-size)
+                          dongle-top-walls-cutout
+                          ; cutout for reset button
+                          (translate
+                           [-11.5 (/ dongle-controller-pin-rows-distance 2) 0]
+                           (cube (first reset-switch-size) (nth reset-switch-size 2) 10))))
+                        dongle-controller-pins-cutout)))
+
+(def dongle (union
+             (translate [0 30 0] dongle-top-layer)
+             dongle-bottom-layer))
+
 (def plate (color platecolor
                   (->> (polygon plate-shape)
                        (extrude-linear {:height 5 :twist 0 :convexity 10})
-                       (translate [0 0 -2.5]))))
+                       (translate [-20 0 -2.5]))))
 
 (def model-right  (union
                    ;plate
@@ -729,12 +869,17 @@
                        (difference (union case-walls
                                           screw-insert-outers
                                           teensy-holder
-                                          rj9-holder
+                                          power-switch
+                                          reset-switch
+                                          ;rj9-holder
                                           usb-holder)
-                                   rj9-space
+                                   ;rj9-space
                                    usb-holder-hole
+                                   power-switch-hole
+                                   reset-switch-hole
+                                   reset-switch-hole-2
                                    screw-insert-holes)))
-                     ;(union thumbcaps caps)
+                    ; (union thumbcaps caps)
                      )
 
                     (translate [0 0 -20] (cube 350 350 40)))))
@@ -744,6 +889,9 @@
 
 (spit "things/left.scad"
       (write-scad (mirror [-1 0 0] model-right)))
+
+(spit "things/dongle.scad"
+      (write-scad dongle))
 
 (spit "things/right-test.scad"
       (write-scad

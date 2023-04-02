@@ -2,6 +2,21 @@
 
 This fork is just for my personal customizations, it removes a lot of features of the [original project](https://github.com/tshort/dactyl-keyboard).
 
+## Third iteration
+
+**.scad** and **.stl** files can be found in [./things/03-iteration](/things/03-iteration).
+
+- `right.stl` and `left.stl` represents 2 halves of split keyboard. IO of each part includes:
+  - Output to expose usb-c or micro usb port for charging and flushing firmware.
+  - 2-position switch for controlling power for keyboard.
+  - Reset button.
+- `dongle.stl` is a case for nice nano that is main controller (nice!nano v2.0) for both parts of the keyboards.
+
+Communication between all the parts is handled by a nice!nano controller in a dongle. Both parts of the keyboard have it's own nice!nano controllers that connect to a dongle via bluetooth. This approach enables using this keyboard wirelessly before bluetooth is on e.g. in BIOS, or to provide LUKS password.
+
+Power for all parts is provided via usb, but both keyboard halves also include batteries that should enable few weeks of work without recharging. Main controller has to always listen for bluetooth communication from other parts. This is increasing power usage when compared to secondary parts, so it's best to use dongle for that, which is always is connected via usb.
+
+
 ## Second iteration
 
 ![image](/things/02-iteration/result.png)
