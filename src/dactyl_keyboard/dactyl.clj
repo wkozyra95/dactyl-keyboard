@@ -599,7 +599,7 @@
 (def power-switch-hole (translate power-switch-position (apply cube (map + [0 5 0] power-switch-size))))
 
 (def reset-switch-thickness [4 -0.1 4])
-(def reset-switch-size [6 8.0 6])
+(def reset-switch-size [6.5 8.0 6.5])
 (def reset-switch-size-outer (map + reset-switch-size reset-switch-thickness))
 (def reset-switch-start (map + [+7 5 0] (key-position 0 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0]))))
 (def reset-switch-position [(first reset-switch-start)
@@ -745,22 +745,22 @@
    [-83.5 9]])
 
 ;(def dongle-controller-height 3.2)
-(def dongle-controller-height (+ 1.6 2.54 0.1)) ; 2.56 is a thickness of breakout pin mount and 1.6 is an estimation of thickness of a PCB itself
-(def dongle-controller-size [33 17.8 dongle-controller-height])
+(def dongle-controller-height (+ 1.6 2.54 0.5)) ; 2.56 is a thickness of breakout pin mount and 1.6 is an estimation of thickness of a PCB itself
+(def dongle-controller-size [33 18.8 dongle-controller-height])
 (def dongle-thickness 4)
 (def dongle-half-hight  (+ dongle-thickness (/ dongle-controller-height 2)))
 (def dongle-layer-size [(+ (* dongle-thickness 2)  (first dongle-controller-size))
                         (+ (* dongle-thickness 2)  (second dongle-controller-size))
                         dongle-thickness])
 (def dongle-screw-mount-element (difference
-                                 (union (cylinder 8  dongle-half-hight))
-                                 (translate [3 0 0] (cylinder 1 100))
+                                 (union (cylinder 10  dongle-half-hight))
+                                 (translate [5 0 0] (cylinder 1.7 100))
                                  (translate [-50 0 0] (cube 100 100 100)) ; half cylinder
                                  ))
 (def dongle-screw-mount (translate [(/ (nth dongle-layer-size 0) 2) 0 0] dongle-screw-mount-element))
 (def dongle-screw-insert-element (difference
-                                  (union (cylinder 8  dongle-half-hight))
-                                  (translate [3 0 1] (cylinder (/ 5.31 2) dongle-half-hight))
+                                  (union (cylinder 10  dongle-half-hight))
+                                  (translate [5 0 1] (cylinder (/ 7.31 2) dongle-half-hight))
                                   (translate [-50 0 0] (cube 100 100 100)) ; half cylinder
                                   ))
 (def dongle-screw-insert (translate [(/ (nth dongle-layer-size 0) 2) 0 0] dongle-screw-insert-element))
@@ -799,7 +799,7 @@
 (def dongle-breakout-pin-partembed-in-layer (/ (- dongle-breakout-pin-full-length dongle-controller-height) 2))
 (def dongle-controller-pin-distance 2.54)
 (def dongle-controller-pin-rows-distance (* 6 dongle-controller-pin-distance))
-(def dongle-controller-pin (cylinder 0.5 (+ 0.01 dongle-breakout-pin-partembed-in-layer)))
+(def dongle-controller-pin (cylinder 1 (+ 0.01 dongle-breakout-pin-partembed-in-layer)))
 (def dongle-pins-row
   (union
    (translate [(* -7 dongle-controller-pin-distance) 0 0] dongle-controller-pin)
@@ -842,7 +842,7 @@
                           dongle-top-walls-cutout
                           ; cutout for reset button
                           (translate
-                           [-11.5 (/ dongle-controller-pin-rows-distance 2) 0]
+                           [-11.5 (/ dongle-controller-pin-rows-distance -2) 0]
                            (cube (first reset-switch-size) (nth reset-switch-size 2) 10))))
                         dongle-controller-pins-cutout)))
 
