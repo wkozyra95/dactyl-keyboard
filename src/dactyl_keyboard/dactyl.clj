@@ -599,7 +599,7 @@
 (def power-switch-hole (translate power-switch-position (apply cube (map + [0 5 0] power-switch-size))))
 
 (def reset-switch-thickness [4 -0.1 4])
-(def reset-switch-size [6.5 8.0 6.5])
+(def reset-switch-size [6.8 8.0 6.8])
 (def reset-switch-size-outer (map + reset-switch-size reset-switch-thickness))
 (def reset-switch-start (map + [+7 5 0] (key-position 0 0 (map + (wall-locate2 0 1) [0 (/ mount-height 2) 0]))))
 (def reset-switch-position [(first reset-switch-start)
@@ -746,7 +746,7 @@
 
 ;(def dongle-controller-height 3.2)
 (def dongle-controller-height (+ 1.6 2.54 0.5)) ; 2.56 is a thickness of breakout pin mount and 1.6 is an estimation of thickness of a PCB itself
-(def dongle-controller-size [33 18.8 dongle-controller-height])
+(def dongle-controller-size [33 19.3 dongle-controller-height])
 (def dongle-thickness 4)
 (def dongle-half-hight  (+ dongle-thickness (/ dongle-controller-height 2)))
 (def dongle-layer-size [(+ (* dongle-thickness 2)  (first dongle-controller-size))
@@ -790,10 +790,10 @@
 
                                (translate
                                 [0 (/ (+ dongle-thickness (second dongle-controller-size)) 2) (/ dongle-row-thickness 2)]
-                                (cube (+ (first dongle-controller-size) 1) (+ dongle-row-thickness 0.05) (+ dongle-row-thickness 0.05)))
+                                (cube (+ (first dongle-controller-size) 1) (+ dongle-row-thickness 0.05) (+ dongle-row-thickness 0.2)))
                                (translate
                                 [0 (* (/ (+ dongle-thickness (second dongle-controller-size)) 2) -1) (/ dongle-row-thickness  2)]
-                                (cube (+ (first dongle-controller-size) 1) (+ dongle-row-thickness 0.05) (+ dongle-row-thickness  0.05))))))
+                                (cube (+ (first dongle-controller-size) 1) (+ dongle-row-thickness 0.05) (+ dongle-row-thickness  0.2))))))
 
 (def dongle-breakout-pin-full-length 11.43)
 (def dongle-breakout-pin-partembed-in-layer (/ (- dongle-breakout-pin-full-length dongle-controller-height) 2))

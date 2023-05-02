@@ -19,19 +19,19 @@ union () {
       difference () {
         translate ([0, 0, 2]) {
           difference () {
-            cube ([41, 26.8, 4], center=true);
+            cube ([41, 27.3, 4], center=true);
             translate ([0, 0, 1.2]) {
               union () {
-                translate ([0, 11.4, 0.4]) {
-                  cube ([34, 0.8500000000000001, 0.8500000000000001], center=true);
+                translate ([0, 11.65, 0.4]) {
+                  cube ([34, 0.8500000000000001, 1.0], center=true);
                 }
-                translate ([0, -11.4, 0.4]) {
-                  cube ([34, 0.8500000000000001, 0.8500000000000001], center=true);
+                translate ([0, -11.65, 0.4]) {
+                  cube ([34, 0.8500000000000001, 1.0], center=true);
                 }
               }
             }
             translate ([-11.5, -7.62, 0]) {
-              cube ([6.5, 6.5, 10], center=true);
+              cube ([6.8, 6.8, 10], center=true);
             }
           }
         }
@@ -152,26 +152,26 @@ union () {
     }
     translate ([0, 0, 6.32]) {
       union () {
-        translate ([0, 11.4, 0]) {
+        translate ([0, 11.65, 0]) {
           cube ([41, 4, 4.640000000000001], center=true);
         }
-        translate ([0, 11.4, 2.72]) {
+        translate ([0, 11.65, 2.72]) {
           cube ([33, 0.8, 0.8], center=true);
         }
-        translate ([0, -11.4, 0]) {
+        translate ([0, -11.65, 0]) {
           cube ([41, 4, 4.640000000000001], center=true);
         }
-        translate ([0, -11.4, 2.72]) {
+        translate ([0, -11.65, 2.72]) {
           cube ([33, 0.8, 0.8], center=true);
         }
         translate ([37/2, 0, 0]) {
-          cube ([4, 26.8, 4.640000000000001], center=true);
+          cube ([4, 27.3, 4.640000000000001], center=true);
         }
       }
     }
     difference () {
       translate ([0, 0, 2]) {
-        cube ([41, 26.8, 4], center=true);
+        cube ([41, 27.3, 4], center=true);
       }
       translate ([0, 0, 2.3025]) {
         union () {
