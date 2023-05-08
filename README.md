@@ -4,6 +4,8 @@ This fork is just for my personal customizations, it removes a lot of features o
 
 ## Third iteration
 
+![image](/things/03-iteration/result.png)
+
 **.scad** and **.stl** files can be found in [./things/03-iteration](/things/03-iteration).
 
 - `right.stl` and `left.stl` represents 2 halves of split keyboard. IO of each part includes:
@@ -11,11 +13,12 @@ This fork is just for my personal customizations, it removes a lot of features o
   - 2-position switch for controlling power for keyboard.
   - Reset button.
 - `dongle.stl` is a case for nice nano that is main controller (nice!nano v2.0) for both parts of the keyboards.
+- `plate.dxf` describes 2D shape of a bottom plate that case is mounted on.
+- `platev2.dxf` plate variant with a cut-out in the middle intended for charging coil for wireless charging.
 
 Communication between all the parts is handled by a nice!nano controller in a dongle. Both parts of the keyboard have it's own nice!nano controllers that connect to a dongle via bluetooth. This approach enables using this keyboard wirelessly before bluetooth is on e.g. in BIOS, or to provide LUKS password.
 
 Power for all parts is provided via usb, but both keyboard halves also include batteries that should enable few weeks of work without recharging. Main controller has to always listen for bluetooth communication from other parts. This is increasing power usage when compared to secondary parts, so it's best to use dongle for that, which is always is connected via usb.
-
 
 ## Second iteration
 
